@@ -6,10 +6,8 @@
 #include <time.h>
 
 #define MAX_WORD_COUNT 15'000
-#define MAX_SUCCESSOR_COUNT                                                    \
-  MAX_WORD_COUNT /                                                             \
-      2 // there's no way we would encounter a text in which a                                            \
-                     // single word had 50% of all words a successors so this is                                       \
+#define MAX_SUCCESSOR_COUNT MAX_WORD_COUNT / 2 // there's no way we would encounter a text in which 
+                     // a single word had 50% of all words a successors so this is                                       \
                      // a safe limit and saves some memory
 
 char book[] = {
@@ -96,7 +94,7 @@ void append_to_succs(char *token, char *succ) {
 /// the functions \c token_id and \c append_to_succs.
 // noget med at finde mellemrum, bruge strlen
 void tokenize_and_fill_succs(char *delimiters, char *str) {
-  char *token = strtok(delimiters, str); // laver det første ord til en token
+  char *token = strtok(str, delimiters); // laver det første ord til en token
   char *prev = NULL; // så den ikk prøver at appende til første ord -1 (ville nok give et eller andet memory shit)
   while (token != NULL && tokens_size < MAX_WORD_COUNT) {  //efter sidste token er NULL
     token_id(token); //tager den token - hvis den er ny registrer den den i tokens
@@ -175,30 +173,34 @@ char *generate_sentence(char *sentence, size_t sentence_size) {
   if (token_ends_a_sentence(token))
     return sentence;
 
-  // Calculated sentence length for the next iteration.
-  // Used to stop the loop if the length exceeds sentence size
-  size_t sentence_len_next;
   // Concatenates random successors to the sentence as long as
   // `sentence` can hold them.
-  do {
-    char *successor_to_add =
-        succs[current_token_id][rand() % succs_sizes[current_token_id]];
-    strcat(sentence, " ");
-    strcat(sentence, successor_to_add); // add sucessor to sentence
-    // skal jeg så søge alle tokens for at finde id på vores nye??
-    int new_id = 0;
-    for (size_t i = 0; i < tokens_size; i++) {
-      if (strcmp(successor_to_add, tokens[i]) == 0) {
-        new_id = i;
-      }
-      current_token_id = new_id;
+  while (true) {
+    // hent antal successors for det nuværende token
+    size_t succ_count = succs_sizes[current_token_id];
+    if (succ_count == 0)
+      break; // der er ingen successors, vi stopper
 
-      if (token_ends_a_sentence(token)) {
-        break;
-      }
-    }
+    // vælg en random successor
+    char *successor_to_add = succs[current_token_id][rand() % succ_count];
 
-  } while (sentence_len_next < sentence_size - 1); // Tjekker om sætningen overskrider max memory
+    // beregn om der er plads i sentence array
+    size_t len_needed = strlen(successor_to_add) + 1; // +1 for space
+    if (strlen(sentence) + len_needed >= sentence_size - 1)
+      break; // for langt, vi stopper
+
+    strcat(sentence, " ");              // tilføj space
+    strcat(sentence, successor_to_add); // tilføj successor til sentence
+
+    // opdater current token id til successorens id
+    current_token_id = token_id(successor_to_add);
+    token = successor_to_add;
+
+    // stop hvis successor ender en sætning
+    if (token_ends_a_sentence(token))
+      break;
+  }
+
   return sentence;
 }
 
