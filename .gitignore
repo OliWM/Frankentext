@@ -1,0 +1,20 @@
+# Ignore compiled files
+*.o
+*.out
+*.exe
+main
+
+# Ignore debug folders
+*.dSYM/
+
+# Ignore VS Code settings
+.vscode/
+
+# ignore DS_store file (I think macOS finder thing?)
+.DS_Store
+
+# Ignore compile_flags
+compile_flags.txt
+
+#Ignore docs
+.docs/
