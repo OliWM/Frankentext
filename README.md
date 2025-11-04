@@ -18,12 +18,12 @@ To compile quick and dirty with clang just
 
 ```bash
 #for macOs/Linux
-clang -std=gnu2y -g -o main src/main.c
+clang -std=c2x -g -o main src/main.c
 ```
 or
 ```bash
 #for Windows (I think this is how)
-clang -std=gnu2y -g -o main.exe src/main.c
+clang -std=c2x -g -o main.exe src/main.c
 ```
 
 And then run
