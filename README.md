@@ -39,5 +39,5 @@ main.exe
 
 ## Flowchart
 
-![Flowchart of Frankentext](https://imgur.com/a/rVqm2E2)
+![Flowchart of Frankentext](https://i.imgur.com/LEO8dNb.png)
 
