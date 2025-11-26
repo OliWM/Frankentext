@@ -1,0 +1,5 @@
+-std=c2x
+-g
+-Iinclude
+-I/opt/homebrew/opt/llvm/include
+-L/opt/homebrew/opt/llvm/lib
